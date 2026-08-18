@@ -21,7 +21,8 @@ function initializeSchema() {
       departure_date TEXT NOT NULL,
       base_price REAL NOT NULL CHECK(base_price >= 0),
       capacity INTEGER NOT NULL CHECK(capacity > 0),
-      booked_count INTEGER NOT NULL DEFAULT 0 CHECK(booked_count <= capacity)
+      booked_count INTEGER NOT NULL DEFAULT 0 CHECK(booked_count <= capacity),
+      duration_nights INTEGER NOT NULL DEFAULT 7 CHECK(duration_nights > 0)
     )
   `).run();
 
@@ -94,7 +95,10 @@ function initializeSchema() {
       discount_value REAL NOT NULL CHECK(discount_value >= 0),
       max_redemptions INTEGER NOT NULL CHECK(max_redemptions >= 0),
       limit_per_customer INTEGER NOT NULL DEFAULT 1 CHECK(limit_per_customer >= 0),
-      redemption_count INTEGER NOT NULL DEFAULT 0 CHECK(redemption_count <= max_redemptions)
+      redemption_count INTEGER NOT NULL DEFAULT 0 CHECK(redemption_count <= max_redemptions),
+      start_date TEXT NOT NULL DEFAULT '2026-01-01',
+      end_date TEXT NOT NULL DEFAULT '2026-12-31',
+      min_spend REAL NOT NULL DEFAULT 0 CHECK(min_spend >= 0)
     )
   `).run();
 

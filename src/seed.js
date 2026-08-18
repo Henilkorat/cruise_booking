@@ -19,17 +19,17 @@ function seedDatabase() {
   console.log('--- Seeding new data ---');
 
   db.transaction(() => {
-    // 1. Seed cruises
+    // 1. Seed cruises (name, destination, departure_date, base_price, capacity, booked_count, duration_nights)
     const insertCruise = db.prepare(`
-      INSERT INTO cruises (name, destination, departure_date, base_price, capacity, booked_count)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO cruises (name, destination, departure_date, base_price, capacity, booked_count, duration_nights)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
     const cruises = [
-      ['Bahamas Getaway', 'Nassau & Cococay', '2026-10-10', 599.00, 150, 0],
-      ['Mediterranean Explorer', 'Rome, Athens & Ephesus', '2026-11-15', 1299.00, 200, 0],
-      ['Alaska Glaciers', 'Juneau & Skagway', '2026-09-05', 999.00, 100, 0],
-      ['Hawaii Tropical Cruise', 'Honolulu & Maui', '2026-12-20', 1499.00, 120, 0],
-      ['European Rivers', 'Rhine & Danube Rivers', '2027-05-18', 1899.00, 80, 0]
+      ['Bahamas Getaway', 'Nassau & Cococay', '2026-10-10', 599.00, 150, 0, 4],
+      ['Mediterranean Explorer', 'Rome, Athens & Ephesus', '2026-11-15', 1299.00, 200, 0, 10],
+      ['Alaska Glaciers', 'Juneau & Skagway', '2026-09-05', 999.00, 100, 0, 7],
+      ['Hawaii Tropical Cruise', 'Honolulu & Maui', '2026-12-20', 1499.00, 120, 0, 8],
+      ['European Rivers', 'Rhine & Danube Rivers', '2027-05-18', 1899.00, 80, 0, 14]
     ];
     for (const cruise of cruises) {
       insertCruise.run(...cruise);
@@ -42,9 +42,9 @@ function seedDatabase() {
       VALUES (?, ?, ?, ?)
     `);
     const bands = [
-      ['Infant', 0, 2, 100.0],
-      ['Child', 3, 12, 50.0],
-      ['Teen', 13, 17, 20.0]
+      ['Infant', 0, 4, 100.0],
+      ['Child', 5, 11, 50.0],
+      ['Teen', 12, 17, 25.0]
     ];
     for (const band of bands) {
       insertBand.run(...band);
@@ -57,9 +57,8 @@ function seedDatabase() {
       VALUES (?, ?)
     `);
     const tiers = [
-      [4, 5.0],
-      [8, 10.0],
-      [12, 15.0]
+      [3, 5.0],
+      [5, 10.0]
     ];
     for (const tier of tiers) {
       insertTier.run(...tier);
@@ -72,25 +71,24 @@ function seedDatabase() {
       VALUES (?, ?)
     `);
     const services = [
-      ['Premium Dining Upgrade', 150.00],
-      ['Unlimited WiFi Package', 50.00],
-      ['Spa Access Pass', 100.00],
-      ['Guided Shore Excursion', 80.00]
+      ['Insurance', 80.00],
+      ['WiFi', 15.00],
+      ['Shore Excursion', 120.00]
     ];
     for (const service of services) {
       insertService.run(...service);
     }
     console.log('Seeded Optional Services.');
 
-    // 5. Seed promo codes
+    // 5. Seed promo codes (code, discount_type, discount_value, max_redemptions, limit_per_customer, start_date, end_date, min_spend)
     const insertPromo = db.prepare(`
-      INSERT INTO promo_codes (code, discount_type, discount_value, max_redemptions, limit_per_customer)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO promo_codes (code, discount_type, discount_value, max_redemptions, limit_per_customer, start_date, end_date, min_spend)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const promos = [
-      ['WELCOME10', 'percent', 10.00, 100, 1],
-      ['CRUISE50', 'flat', 50.00, 50, 1],
-      ['SUPERDEAL', 'percent', 25.00, 5, 2]
+      ['WELCOME10', 'percent', 10.00, 100, 1, '2026-01-01', '2026-12-31', 0.00],
+      ['CRUISE50', 'flat', 50.00, 50, 1, '2026-01-01', '2026-12-31', 500.00],
+      ['SUPERDEAL', 'percent', 25.00, 5, 2, '2026-01-01', '2026-12-31', 1000.00]
     ];
     for (const promo of promos) {
       insertPromo.run(...promo);

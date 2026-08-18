@@ -66,7 +66,25 @@ Promo codes require strict limits to prevent financial abuse or accidental doubl
 
 ---
 
-## 4. Normalization Decisions and Future Improvements
+## 4. Point of Tax Application & Justification
+
+### The Design Decision
+In our pricing algorithm (`pricingService.js`), the 12% sales/hospitality tax is calculated using the following sequence:
+1. Determine the gross cruise passenger fares after applying child fare band discounts.
+2. Apply the group discount percentage to the gross cruise passenger fares.
+3. Add the optional service costs (Insurance, WiFi, Excursion) to establish the pre-promo subtotal.
+4. Deduct the promo code discount (percentage or flat value) from the subtotal.
+5. **Apply 12% Tax on the remaining net subtotal.**
+6. Add the tax to the net subtotal to produce the grand total.
+
+### Justification
+1. **Net Taxable Sales Standard**: According to global taxation rules (such as US State Sales Tax and European VAT guidelines), tax must only be collected on the actual consideration paid by the buyer (the transaction value). When a seller issues a coupon or rebate (the promo code), the taxable amount is reduced because the revenue received is lower. Charging tax on pre-coupon subtotals would penalize the customer and lead to discrepancy disputes.
+2. **Service Inclusions**: Optional services (wifi, dining upgrades) are taxable values because they constitute standard onboard expenditures. Including them in the taxable base is standard practice.
+3. **Non-Double Taxation**: Group discounts represent a direct ticket discount (not a payment tender), meaning the taxable base of the cruise ticket is reduced.
+
+---
+
+## 5. Normalization Decisions and Future Improvements
 
 With additional development time, several areas would benefit from further normalization:
 
