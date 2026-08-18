@@ -6,12 +6,15 @@ const bookingRoutes = require('./routes/bookingRoutes');
 // Load database to trigger connection & setup
 const db = require('./db');
 
+const path = require('path');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Enable CORS and JSON parsing
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../')));
 
 // Request logging middleware
 app.use((req, res, next) => {

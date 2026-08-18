@@ -163,4 +163,15 @@ router.get('/:reference', (req, res) => {
   }
 });
 
+// GET /customers/list -> Fetch seeded customers
+router.get('/customers/list', (req, res) => {
+  try {
+    const customers = db.prepare('SELECT id, first_name, last_name, email FROM customers').all();
+    res.json(customers);
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    res.status(500).json({ error: 'Failed to retrieve customers' });
+  }
+});
+
 module.exports = router;

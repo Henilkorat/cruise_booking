@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cruise Booking System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      color: #0275d8;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .checkbox-group {
+      margin-bottom: 15px;
+    }
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 15px;
+      font-weight: normal;
+    }
+    .btn {
+      background-color: #0275d8;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    .btn:hover {
+      background-color: #025aa5;
+    }
+    .btn-danger {
+      background-color: #d9534f;
+    }
+    .btn-danger:hover {
+      background-color: #c9302c;
+    }
+    .passenger-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .passenger-row input {
+      flex: 1;
+    }
+    .section {
+      border-top: 2px solid #eee;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+    #error-box {
+      background-color: #f2dede;
+      color: #a94442;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid #ebccd1;
+      border-radius: 4px;
+      display: none;
+    }
+    #success-box {
+      background-color: #dff0d8;
+      color: #3c763d;
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid #d6e9c6;
+      border-radius: 4px;
+      display: none;
+    }
+    .result-table {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Cruise Booking System Dashboard</h1>
+  
+  <div id="error-box"></div>
+  <div id="success-box"></div>
+
+  <!-- Cruise Selection -->
+  <div class="section">
+    <h2>1. Select an Available Cruise</h2>
+    <table id="cruise-table">
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Name</th>
+          <th>Destination</th>
+          <th>Nights</th>
+          <th>Departure Date</th>
+          <th>Base Price</th>
+          <th>Capacity Left</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="7">Loading cruises...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Booking Parameters -->
+  <div class="section">
+    <h2>2. Booking Parameters</h2>
+    <div class="form-group">
+      <label for="customer-select">Customer</label>
+      <select id="customer-select">
+        <option value="">Loading customers...</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Optional Add-on Services</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="services" value="Insurance"> Insurance ($80/passenger)</label>
+        <label><input type="checkbox" name="services" value="WiFi"> Unlimited WiFi ($15/passenger/night)</label>
+        <label><input type="checkbox" name="services" value="Shore Excursion"> Shore Excursion ($120/passenger)</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="promo-input">Promo Code</label>
+      <input type="text" id="promo-input" placeholder="e.g. WELCOME10">
+    </div>
+  </div>
+
+  <!-- Passenger Configuration -->
+  <div class="section">
+    <h2>3. Passengers List</h2>
+    <div id="passengers-container">
+      <div class="passenger-row" data-index="0">
+        <input type="text" placeholder="First Name" name="first-name" required value="Alice">
+        <input type="text" placeholder="Last Name" name="last-name" required value="Doe">
+        <input type="number" placeholder="Age" name="age" required value="30" min="0">
+        <button type="button" class="btn btn-danger remove-passenger-btn" style="padding: 5px 10px; display: none;">Remove</button>
+      </div>
+    </div>
+    <button type="button" class="btn" id="add-passenger-btn" style="background-color: #5cb85c;">Add Passenger</button>
+  </div>
+
+  <!-- Action Controls -->
+  <div class="section">
+    <h2>4. Pricing & booking confirmation</h2>
+    <button class="btn" id="get-quote-btn">Get Quote</button>
+    <button class="btn" id="confirm-booking-btn" style="background-color: #f0ad4e;">Confirm Booking</button>
+  </div>
+
+  <!-- Quote & Snapshot Results -->
+  <div class="section" id="results-section" style="display: none;">
+    <h2 id="result-title">Priced Breakdown</h2>
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>Line Item Description</th>
+          <th>Charge details</th>
+        </tr>
+      </thead>
+      <tbody id="result-body">
+        <!-- populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const API_URL = ''; // local absolute path calls
+
+  // DOM Elements
+  const cruiseTableBody = document.querySelector('#cruise-table tbody');
+  const customerSelect = document.getElementById('customer-select');
+  const promoInput = document.getElementById('promo-input');
+  const passengersContainer = document.getElementById('passengers-container');
+  const addPassengerBtn = document.getElementById('add-passenger-btn');
+  const getQuoteBtn = document.getElementById('get-quote-btn');
+  const confirmBookingBtn = document.getElementById('confirm-booking-btn');
+  const resultsSection = document.getElementById('results-section');
+  const resultTitle = document.getElementById('result-title');
+  const resultBody = document.getElementById('result-body');
+  const errorBox = document.getElementById('error-box');
+  const successBox = document.getElementById('success-box');
+
+  let passengerIndex = 1;
+
+  // On page load
+  window.addEventListener('DOMContentLoaded', () => {
+    loadCruises();
+    loadCustomers();
+    setupPassengerEvents();
+  });
+
+  // Fetch cruises
+  async function loadCruises() {
+    try {
+      const res = await fetch(`${API_URL}/cruises`);
+      const cruises = await res.json();
+      cruiseTableBody.innerHTML = '';
+      cruises.forEach((c, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="radio" name="selected-cruise" value="${c.id}" ${idx === 0 ? 'checked' : ''}></td>
+          <td>${c.name}</td>
+          <td>${c.destination}</td>
+          <td>${c.durationNights}</td>
+          <td>${c.departureDate}</td>
+          <td>$${c.basePrice.toFixed(2)}</td>
+          <td>${c.capacityLeft} / ${c.capacity}</td>
+        `;
+        cruiseTableBody.appendChild(tr);
+      });
+    } catch (err) {
+      showError('Failed to load cruises from API server.');
+    }
+  }
+
+  // Fetch customers list
+  async function loadCustomers() {
+    try {
+      const res = await fetch(`${API_URL}/customers/list`);
+      const customers = await res.json();
+      customerSelect.innerHTML = '';
+      customers.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.first_name} ${c.last_name} (${c.email})`;
+        customerSelect.appendChild(opt);
+      });
+    } catch (err) {
+      showError('Failed to load customers from API server.');
+    }
+  }
+
+  // Dynamic Passenger configuration controls
+  addPassengerBtn.addEventListener('click', () => {
+    const rows = passengersContainer.querySelectorAll('.passenger-row');
+    if (rows.length >= 6) {
+      showError('Maximum 6 passengers are permitted per booking.');
+      return;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'passenger-row';
+    row.dataset.index = passengerIndex++;
+    row.innerHTML = `
+      <input type="text" placeholder="First Name" name="first-name" required>
+      <input type="text" placeholder="Last Name" name="last-name" required>
+      <input type="number" placeholder="Age" name="age" required min="0">
+      <button type="button" class="btn btn-danger remove-passenger-btn" style="padding: 5px 10px;">Remove</button>
+    `;
+    passengersContainer.appendChild(row);
+    setupPassengerEvents();
+    hideMessages();
+  });
+
+  function setupPassengerEvents() {
+    document.querySelectorAll('.remove-passenger-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.target.parentElement.remove();
+        setupPassengerEvents();
+        hideMessages();
+      };
+    });
+
+    // Hide/show remove button for single row
+    const rows = passengersContainer.querySelectorAll('.passenger-row');
+    if (rows.length === 1) {
+      rows[0].querySelector('.remove-passenger-btn').style.display = 'none';
+    } else {
+      rows.forEach(r => r.querySelector('.remove-passenger-btn').style.display = 'inline-block');
+    }
+  }
+
+  // Gather payload data from UI inputs
+  function getFormData() {
+    const selectedCruiseInput = document.querySelector('input[name="selected-cruise"]:checked');
+    if (!selectedCruiseInput) {
+      throw new Error('Please select a cruise voyage.');
+    }
+
+    const passengers = [];
+    const rows = passengersContainer.querySelectorAll('.passenger-row');
+    rows.forEach(r => {
+      const firstName = r.querySelector('input[name="first-name"]').value.trim();
+      const lastName = r.querySelector('input[name="last-name"]').value.trim();
+      const ageVal = r.querySelector('input[name="age"]').value;
+      
+      if (!firstName || !lastName || ageVal === '') {
+        throw new Error('Please populate all passenger fields.');
+      }
+      passengers.push({
+        firstName,
+        lastName,
+        age: parseInt(ageVal, 10)
+      });
+    });
+
+    const optionalServices = [];
+    document.querySelectorAll('input[name="services"]:checked').forEach(c => {
+      optionalServices.push(c.value);
+    });
+
+    return {
+      cruiseId: parseInt(selectedCruiseInput.value, 10),
+      customerId: parseInt(customerSelect.value, 10),
+      passengers,
+      optionalServices,
+      promoCode: promoInput.value.trim() || null
+    };
+  }
+
+  // Render priced breakdown JSON
+  function renderBreakdown(data) {
+    resultsSection.style.display = 'block';
+    resultBody.innerHTML = '';
+
+    // Fares per passenger
+    data.passengers.forEach(p => {
+      addResultRow(`${p.name} (${p.category})`, `$${p.finalFare.toFixed(2)} (base fare: $${p.originalFare.toFixed(2)}, child discount: ${p.discountPct}%)`);
+    });
+
+    addResultRow('Fares Subtotal', `$${data.faresSubtotal.toFixed(2)}`);
+    
+    // Group Discount
+    if (data.groupDiscount.percentage > 0) {
+      addResultRow(`Group Discount (${data.groupDiscount.percentage}%)`, `-$${data.groupDiscount.amount.toFixed(2)}`);
+    }
+    
+    addResultRow('Net Fares Subtotal', `$${data.cruiseFaresNet.toFixed(2)}`);
+
+    // Optional Services
+    if (data.optionalServices.length > 0) {
+      data.optionalServices.forEach(s => {
+        const desc = s.nights ? `${s.name} ($${s.rate}/passenger/night x ${s.quantity} passengers x ${s.nights} nights)` : `${s.name} ($${s.rate}/passenger x ${s.quantity} passengers)`;
+        addResultRow(desc, `$${s.total.toFixed(2)}`);
+      });
+      addResultRow('Services Subtotal', `$${data.servicesSubtotal.toFixed(2)}`);
+    }
+
+    addResultRow('Pre-Promo Subtotal', `$${data.prePromoSubtotal.toFixed(2)}`);
+
+    // Promo Code
+    if (data.promoCodeApplied) {
+      addResultRow(`Promo Code Applied (${data.promoCodeApplied.code})`, `-$${data.promoCodeApplied.discountAmount.toFixed(2)}`);
+    }
+
+    // Tax & Total
+    addResultRow(`Sales Tax (${(data.tax.rate * 100).toFixed(0)}%)`, `$${data.tax.amount.toFixed(2)}`);
+    addResultRow('<strong>Total Grand Price</strong>', `<strong>$${data.totalPrice.toFixed(2)}</strong>`);
+  }
+
+  function addResultRow(description, charge) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${description}</td><td>${charge}</td>`;
+    resultBody.appendChild(tr);
+  }
+
+  // Button actions
+  getQuoteBtn.addEventListener('click', async () => {
+    hideMessages();
+    try {
+      const payload = getFormData();
+      const res = await fetch(`${API_URL}/quote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cruiseId: payload.cruiseId,
+          passengers: payload.passengers.map(p => p.age), // quote accepts simple ages array
+          optionalServices: payload.optionalServices,
+          promoCode: payload.promoCode,
+          customerId: payload.customerId
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Quote retrieval failed.');
+      }
+
+      resultTitle.textContent = 'Priced Quote Breakdown';
+      renderBreakdown(data);
+    } catch (err) {
+      showError(err.message);
+    }
+  });
+
+  confirmBookingBtn.addEventListener('click', async () => {
+    hideMessages();
+    try {
+      const payload = getFormData();
+      const res = await fetch(`${API_URL}/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Booking confirmation failed.');
+      }
+
+      showSuccess(`Booking successfully confirmed! Reference Code: <strong>${data.bookingReference}</strong>`);
+      resultTitle.textContent = `Confirmed Receipt (${data.bookingReference})`;
+      renderBreakdown(data.breakdown);
+      
+      // Refresh cruises table to reflect decremented capacity
+      loadCruises();
+    } catch (err) {
+      showError(err.message);
+    }
+  });
+
+  // Helpers
+  function showError(msg) {
+    errorBox.innerHTML = msg;
+    errorBox.style.display = 'block';
+    successBox.style.display = 'none';
+    window.scrollTo(0, 0);
+  }
+
+  function showSuccess(msg) {
+    successBox.innerHTML = msg;
+    successBox.style.display = 'block';
+    errorBox.style.display = 'none';
+    window.scrollTo(0, 0);
+  }
+
+  function hideMessages() {
+    errorBox.style.display = 'none';
+    successBox.style.display = 'none';
+  }
+</script>
+</body>
+</html>
