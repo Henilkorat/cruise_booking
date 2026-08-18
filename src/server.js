@@ -28,9 +28,15 @@ app.get('/', (req, res) => {
   });
 });
 
-// Register routers
+// Register routers (supporting both /api and root namespaces)
+app.use('/cruises', cruiseRoutes);
 app.use('/api/cruises', cruiseRoutes);
+
+app.use('/bookings', bookingRoutes);
 app.use('/api/bookings', bookingRoutes);
+
+app.use('/', bookingRoutes); // for POST /quote and GET /:reference
+app.use('/api', bookingRoutes); // for POST /api/quote and GET /api/:reference
 
 // 404 handler
 app.use((req, res) => {

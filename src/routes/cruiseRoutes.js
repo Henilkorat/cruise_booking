@@ -5,7 +5,17 @@ const cruiseService = require('../services/cruiseService');
 // Get all cruises
 router.get('/', (req, res) => {
   try {
-    const cruises = cruiseService.getAllCruises();
+    const cruises = cruiseService.getAllCruises().map(c => ({
+      id: c.id,
+      name: c.name,
+      destination: c.destination,
+      departureDate: c.departure_date,
+      basePrice: c.base_price,
+      capacity: c.capacity,
+      bookedCount: c.booked_count,
+      capacityLeft: c.capacity - c.booked_count,
+      durationNights: c.duration_nights
+    }));
     res.json(cruises);
   } catch (error) {
     console.error('Error fetching cruises:', error);
