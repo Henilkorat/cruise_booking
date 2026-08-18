@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Minimal Cruise Booking Node.js + Express + better-sqlite3 Backend Scaffold",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "start": "node src/server.js"
   },

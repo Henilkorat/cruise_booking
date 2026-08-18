@@ -1,4 +1,4 @@
-const db = require('../db');
+import db from '../db.js';
 
 /**
  * Calculates itemized cruise booking prices based on business rules.
@@ -260,6 +260,6 @@ function calculatePricing({ cruiseId, passengers, optionalServices = [], promoCo
   };
 }
 
-module.exports = {
+export {
   calculatePricing
 };

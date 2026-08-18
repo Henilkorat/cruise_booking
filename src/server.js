@@ -1,12 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const cruiseRoutes = require('./routes/cruiseRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
+import express from 'express';
+import cors from 'cors';
+import cruiseRoutes from './routes/cruiseRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
+import db from './db.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Load database to trigger connection & setup
-const db = require('./db');
-
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -71,4 +72,4 @@ function gracefulShutdown() {
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
 
-module.exports = app; // Export for testing if needed
+export default app; // Export for testing if needed

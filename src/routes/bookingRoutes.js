@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const bookingService = require('../services/bookingService');
-const { calculatePricing } = require('../services/pricingService');
-const db = require('../db');
+import * as bookingService from '../services/bookingService.js';
+import { calculatePricing } from '../services/pricingService.js';
+import db from '../db.js';
 
 // Helper function to map pricing/booking service errors to Express HTTP responses
 function handleServiceError(error, res) {
@@ -174,4 +174,4 @@ router.get('/customers/list', (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

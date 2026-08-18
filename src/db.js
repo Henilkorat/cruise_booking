@@ -1,5 +1,9 @@
-const Database = require('better-sqlite3');
-const path = require('path');
+import Database from 'better-sqlite3';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Resolve path to the database file in the project root
 const dbPath = path.resolve(__dirname, '../cruise_booking.db');
@@ -260,4 +264,4 @@ function initializeSchema() {
 // Run schema initialization
 initializeSchema();
 
-module.exports = db;
+export default db;

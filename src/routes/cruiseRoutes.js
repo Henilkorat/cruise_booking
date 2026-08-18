@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const cruiseService = require('../services/cruiseService');
+import * as cruiseService from '../services/cruiseService.js';
 
 // Get all cruises
 router.get('/', (req, res) => {
@@ -43,4 +43,4 @@ router.get('/:id', (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

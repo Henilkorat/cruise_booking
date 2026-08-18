@@ -1,4 +1,5 @@
-const db = require('./db');
+import db from './db.js';
+import { fileURLToPath } from 'url';
 
 function seedDatabase() {
   console.log('--- Clearing existing database tables ---');
@@ -25,11 +26,11 @@ function seedDatabase() {
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
     const cruises = [
-      ['Bahamas Getaway', 'Nassau & Cococay', '2026-10-10', 599.00, 150, 0, 4],
-      ['Mediterranean Explorer', 'Rome, Athens & Ephesus', '2026-11-15', 1299.00, 200, 0, 10],
-      ['Alaska Glaciers', 'Juneau & Skagway', '2026-09-05', 999.00, 100, 0, 7],
-      ['Hawaii Tropical Cruise', 'Honolulu & Maui', '2026-12-20', 1499.00, 120, 0, 8],
-      ['European Rivers', 'Rhine & Danube Rivers', '2027-05-18', 1899.00, 80, 0, 14]
+      ['Royal Caribbean - Wonder of the Seas', 'Caribbean', '2026-10-10', 1200.00, 100, 88, 7],
+      ['Celebrity Cruises - Celebrity Beyond', 'Mediterranean', '2026-11-15', 1850.00, 100, 96, 10],
+      ['Norwegian Cruise Line - Norwegian Prima', 'Alaska', '2026-09-05', 950.00, 100, 80, 5],
+      ['Princess Cruises - Sky Princess', 'Northern Europe', '2026-12-20', 2100.00, 100, 98, 12],
+      ['MSC Cruises - MSC Seascape', 'Bahamas', '2027-05-18', 700.00, 100, 100, 4]
     ];
     for (const cruise of cruises) {
       insertCruise.run(...cruise);
@@ -86,10 +87,10 @@ function seedDatabase() {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const promos = [
-      ['SUMMER10', 'percent', 10.00, 100, 1, '2026-01-01', '2026-08-31', 1000.00],
-      ['FIRST50', 'flat', 150.00, 500, 1, '2026-01-01', '2026-12-31', 2000.00],
+      ['SUMMER10', 'percent', 10.00, 100, 1, '2026-06-01', '2026-08-31', 1000.00],
+      ['FIRST150', 'flat', 150.00, 500, 1, '2026-01-01', '2026-12-31', 2000.00],
       ['CREW25', 'percent', 25.00, 3, 3, '2026-01-01', '2026-12-31', 0.00],
-      ['WINTER5', 'percent', 5.00, 1000, 5, '2025-01-01', '2026-03-31', 0.00]
+      ['WINTER5', 'percent', 5.00, 1000, 5, '2025-01-01', '2025-03-31', 0.00]
     ];
     for (const promo of promos) {
       insertPromo.run(...promo);
@@ -115,8 +116,8 @@ function seedDatabase() {
   console.log('--- Database successfully seeded ---');
 }
 
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   seedDatabase();
 }
 
-module.exports = seedDatabase;
+export default seedDatabase;

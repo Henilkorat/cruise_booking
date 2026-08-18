@@ -1,5 +1,5 @@
-const db = require('../db');
-const { calculatePricing } = require('./pricingService');
+import db from '../db.js';
+import { calculatePricing } from './pricingService.js';
 
 /**
  * Creates a confirmed booking with passenger lists, optional services, and promo codes.
@@ -156,7 +156,7 @@ function getBookingsByCruise(cruiseId) {
   return db.prepare(query).all(cruiseId);
 }
 
-module.exports = {
+export {
   createBooking,
   getBookingsByCruise
 };

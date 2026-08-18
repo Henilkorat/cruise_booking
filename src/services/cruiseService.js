@@ -1,4 +1,4 @@
-const db = require('../db');
+import db from '../db.js';
 
 /**
  * Get all available cruises.
@@ -19,7 +19,7 @@ function getCruiseById(id) {
   return db.prepare(query).get(id);
 }
 
-module.exports = {
+export {
   getAllCruises,
   getCruiseById
 };
