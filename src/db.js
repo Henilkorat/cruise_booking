@@ -5,7 +5,10 @@ const path = require('path');
 const dbPath = path.resolve(__dirname, '../cruise_booking.db');
 
 // Initialize better-sqlite3 database
-const db = new Database(dbPath, { verbose: console.log });
+// Only print SQL queries to standard output when DEBUG=true is set
+const db = new Database(dbPath, { 
+  verbose: process.env.DEBUG === 'true' ? console.log : null 
+});
 
 // Enable foreign key constraints
 db.pragma('foreign_keys = ON');
